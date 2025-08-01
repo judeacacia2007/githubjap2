@@ -1,0 +1,63 @@
+import sqlite3
+conn = sqlite3.connect("students.db")
+cursor = conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXIST students
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    age INTEGER,
+    grade TEXT
+)
+""")
+con.commit()
+def add_student(name,age,grade):
+    cursor.execute("INSERT INTO student (name,age,grade)VALUES(?,?,?)",(name,age,grade))
+    conn.commit()
+    print("student added successfully!")
+def view_students():
+    cursor.execute("SELECT*FROM students")
+    for row in cursor.fetchall():
+        print(row)
+def update-student(student_id,name,age,grade):
+    cursor.execute("UPDATE student SET name=?,age=?,grade=? WHERE id=?",(name,age,grade,student_id))
+    conn.commit()
+    print("student added successfully!")
+def update_student(student_id,name,age,grade):
+    cursor.execute("UPDATE student SET name=?,age=?,grade=? WHERE id=?",(name,age,grade,student_id))
+    conn.commit()
+    print("student update successfully!")
+def delete_student(stuent_id):
+    cursor.execute("DELETE FROM students WHERE id=?",(student_id,))
+    conn.commit()
+    print("student deleted successfully!")
+while True:
+    print("\n--student database manager--")
+    print("1. add student")
+    print("2. view student")
+    print("3. update student")
+    print("4. delete student")
+    print("5. exit")
+
+    choice = input("enter choice:")
+
+    if choice == "1":
+        name = input("enter name:")
+        age = int(input("enter age:"))
+        grade = int(input("enter grade:"))
+    elif choice == "2":
+        view-students()
+    elif choice == "3"
+        student-id = int(input("enter student ID to update:"))
+        name = input("enter new name:")
+        age = int(input("enter new age:"))
+        grade = int(input("enter new grade:"))
+        update_student(student_id,name,age,grade)
+    elif choice == "4":
+        student_id = int(input("enter student ID to delete:"))
+        delete_student(student_id)
+    elif choice == "5"
+        break
+    else:
+        print("invalid choice, try again.")
+    conn.close()
+        
