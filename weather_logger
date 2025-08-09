@@ -1,0 +1,56 @@
+import requests
+import sqlite3
+from datatime import datetime
+
+def create-table():
+    conn = sqlite3.connect("weather.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS weather_logger(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            city TEXT,
+            temperature REAL,
+            description TEXT,
+            datetime TEXT
+        )
+''' )
+conn.commit()
+conn.close()
+def fetch_weather(city):
+    api_key = ""https://wttr.in/{}?format=j1".format(city)"
+    response = requests.get(api_key)
+    data = response.json()
+
+    temperature = data['current_condition'][0]['temp_C']
+    description = datadata['current_condition'][0]['weatherDesc'][0]['value']
+    return float(tempeture),description
+
+def save_weather(city,temp,desc):
+    conn = sqlite3.connect("weather.db")
+    cursor = conn.cursor()
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor = conn.execute("INSERT INTO weather_log(city,temperature,dexcription,datetime)VALUES(?,?,?,?)",(xity,temp,desc,dt))
+    conn.commit()
+    conn.close()
+
+def view_history():
+    conn = sqlite3.connect("weather.db")
+    cursor = conn.cursor()
+    cursor.fetchall()
+    rows = cursor.fetchall()
+    conn.close()
+    for row in rows:
+        print(row)
+
+create_table()
+city = input("enter city name:")
+temp,desc = fetch_weather9city)
+print(f"current temp:{temp}")°C,condition:{desc}")
+save_weather(city,temp,desc)
+print("\nweather history:")
+view_history()
+
+with open("output.txt", "w") as f:
+    f.write(str(cursor.fetchall()))
+
+
