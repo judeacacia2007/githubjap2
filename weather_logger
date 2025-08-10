@@ -1,8 +1,8 @@
 import requests
 import sqlite3
-from datatime import datetime
+from datetime import datetime
 
-def create-table():
+def create_table():
     conn = sqlite3.connect("weather.db")
     cursor = conn.cursor()
     cursor.execute('''
@@ -14,43 +14,39 @@ def create-table():
             datetime TEXT
         )
 ''' )
-conn.commit()
-conn.close()
+    conn.commit()
+    conn.close()
 def fetch_weather(city):
-    api_key = ""https://wttr.in/{}?format=j1".format(city)"
+    api_key = "https://wttr.in/{}?format=j1".format(city)
     response = requests.get(api_key)
-    data = response.json()
+    date = response.json()
 
-    temperature = data['current_condition'][0]['temp_C']
-    description = datadata['current_condition'][0]['weatherDesc'][0]['value']
-    return float(tempeture),description
+    temperature = date['current_condition'][0]['temp_C']
+    description = date['current_condition'][0]['weatherDesc'][0]['value']
+    return float(temperature),description
 
 def save_weather(city,temp,desc):
     conn = sqlite3.connect("weather.db")
     cursor = conn.cursor()
     dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cursor = conn.execute("INSERT INTO weather_log(city,temperature,dexcription,datetime)VALUES(?,?,?,?)",(xity,temp,desc,dt))
+    cursor = conn.execute("INSERT INTO weather_logger(city,temperature,description,datetime)VALUES(?,?,?,?)",(city,temperature,description,dt))
     conn.commit()
     conn.close()
 
 def view_history():
     conn = sqlite3.connect("weather.db")
     cursor = conn.cursor()
-    cursor.fetchall()
+    cursor.execute("SELECT*FROM weather_logger ORDER BY id DESC LIMIT 1")
     rows = cursor.fetchall()
-    conn.close()
     for row in rows:
         print(row)
+    conn.close()
 
 create_table()
 city = input("enter city name:")
-temp,desc = fetch_weather9city)
-print(f"current temp:{temp}")°C,condition:{desc}")
-save_weather(city,temp,desc)
+temperature, description = fetch_weather(city)
+print(f"current temp:{temperature}),condition:{description}")
+save_weather(city,temperature,description)
 print("\nweather history:")
 view_history()
-
-with open("output.txt", "w") as f:
-    f.write(str(cursor.fetchall()))
-
 
