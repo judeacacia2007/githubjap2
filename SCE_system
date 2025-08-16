@@ -1,0 +1,35 @@
+import sqlite3
+
+conn = sqlite3.connect("school.db")
+cursor = conn.cursor()
+
+cursor.execute("DROP TABLE IF EXISTS students")
+cursor.execute("DROP TABLE IF EXISTS courses")
+cursor.execute("DROP TABLE IF EXISTS enrollments")
+
+cursor.execute("CREATE TABLE students(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)")
+cursor.execute("CREATE TABLE courses(id INTEGER PRIMARY KEY, course_name TEXT)")
+cursor.execute("CREATE TABLE enrollments(student_id INTEGER, course_id INTEGER)")
+
+students = [(1,"alice",20),(2,"bob",22),(3,"charlie",21)]
+courses = [(101, "python"),(102, "sql"),(103,"data science")]
+enrollments = [(1, 101),(1, 103),(3, 101)]
+
+cursor.executemany("INSERT INTO students VALUES(?,?,?)",students)
+cursor.executemany("INSERT INTO courses VALUES(?,?)",courses)
+cursor.executemany("INSERT INTO enrollments VALUES(?,?)",enrollments)
+
+cursor.execute("""
+    SELECT students.name, courses.course_name
+    FROM students
+    INNER JOIN enrollments ON students.id = enrollments.student_id
+    INNER JOIN courses ON enrollments.course_id = courses.id
+""")
+
+result = cursor.fetchall()
+print("students course enrollments:")
+for row in result:
+    print(row)
+
+conn.commit()
+conn.close()
