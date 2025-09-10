@@ -1,0 +1,57 @@
+import sqlite3
+from datetime import date
+
+# --- Database Setup ---
+conn = sqlite3.connect('mood_music.db')
+c = conn.cursor()
+
+c.execute('''CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY, username TEXT UNIQUE)''')
+c.execute('''CREATE TABLE IF NOT EXISTS Moods(mood_id INTEGER PRIMARY KEY, mood_name TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS Songs(song_id INTEGER PRIMARY KEY, title TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS Logs(log_id INTEGER PRIMARY KEY, user_id INTEGER, mood_id INTEGER, song_id INTEGER, log_date DATE)''')
+
+# Sample Data
+for mood in ['Happy','Sad','Energetic']: c.execute("INSERT OR IGNORE INTO Moods(mood_name) VALUES(?)",(mood,))
+for song in ['Shape of You','Bohemian Rhapsody','Lose Yourself']: c.execute("INSERT OR IGNORE INTO Songs(title) VALUES(?)",(song,))
+conn.commit()
+conn.close()
+
+# --- Functions ---
+def register(username):
+    conn = sqlite3.connect('mood_music.db')
+    c = conn.cursor()
+    try:
+         c.execute("INSERT INTO Users(username) VALUES(?)",(username,))
+         conn.commit()
+    except sqlite3.integrityerror
+        print("User exists!")
+    finally:
+        conn.commit();
+
+def log_mood(username,mood,song):
+    conn = sqlite3.connect('mood_music.db'); 
+    c = conn.cursor()
+    c.execute("SELECT user_id FROM Users WHERE username=?",(username,)); uid=c.fetchone()[0]
+    c.execute("SELECT mood_id FROM Moods WHERE mood_name=?",(mood,)); mid=c.fetchone()[0]
+    c.execute("SELECT song_id FROM Songs WHERE title=?",(song,)); sid=c.fetchone()[0]
+    c.execute("INSERT INTO Logs(user_id,mood_id,song_id,log_date) VALUES(?,?,?,?)",(uid,mid,sid,date.today()))
+    conn.commit();
+    conn.close()
+
+def recommend(username,mood):
+    conn = sqlite3.connect('mood_music.db'); 
+    c = conn.cursor()
+    c.execute("SELECT user_id FROM Users WHERE username=?",(username,)); uid=c.fetchone()[0]
+    c.execute('''SELECT s.title, COUNT(*) FROM Logs l JOIN Songs s ON l.song_id=s.song_id
+                 JOIN Moods m ON l.mood_id=m.mood_id WHERE l.user_id=? AND m.mood_name=?
+                 GROUP BY s.title ORDER BY COUNT(*) DESC LIMIT 3''',(uid,mood))
+    res=c.fetchall()
+    if res: print("Recommended:", [r[0] for r in res])
+    else: print("No recommendations yet.")
+    conn.close()
+
+# --- Example Usage ---
+register("jude")
+log_mood("jude","Happy","Shape of You")
+log_mood("jude","Happy","Lose Yourself")
+recommend("jude","Happy")
