@@ -1,9 +1,9 @@
-impor sqlite3
+import sqlite3
 from datetime import datetime
 conn = sqlite3.connect("expenses.db")
 cursor = conn.cursor()
 
-cursor.execute("DROP TABLE IF EXIST expenses")
+cursor.execute("DROP TABLE IF EXISTs expenses")
 
 cursor.execute("""
 CREATE TABLE expenses(
@@ -21,7 +21,7 @@ sample_expenses = [
     ("food",150,"2025-08-12"),
     ("travel",20,"2025-08-12"),
 ]
-cursor.executemany("INSERT INTO expenses(category,amount,date)VALUES(?,?,?)"),
+cursor.executemany("INSERT INTO expenses(category,amount,date)VALUES(?,?,?)",sample_expenses)
 
 print("\n all expenses:")
 cursor.execute("SELECT*FROM expenses")
@@ -34,7 +34,7 @@ for row in cursor.fetchall():
     print(f"{row[0]}:{row[1]} INR")
 
 print("\n total monthly expenses:")
-cursor.execute("SELECT steftime('%y-%m',date)as month,SUM(amount) FROM expenses GROUP BY month")
+cursor.execute("SELECT strftime('%y-%m',date)as month,SUM(amount) FROM expenses GROUP BY month")
 for row in cursor.fetchall():
     print(f"{row[0]}:{row[1]} INR")
 
