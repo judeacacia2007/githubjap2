@@ -1,0 +1,80 @@
+import sqlite3
+from datetime import datetime
+
+conn = sqlite3.connect('habits.db')
+cursor = conn.cursor()
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS habits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    habits_name TEXT,
+    date TEXT,
+    status TEXT
+)
+''')
+conn.commit()
+
+def add_habits(habits_name):
+    date = datetime.today().strftime('%Y-%m-%d')
+    cursor.execute("INSERT INTO habits (habits_name, date, status) VALUES(?, ?, ?)",(habits_name,date,'not done'))
+    conn.commit()
+    print(f"habits '{habits_name}' added for today!")
+
+def mark_done(habits_id):
+    cursor.execute("UPDATE habits SET status='done'WHERE id=?",(habits_id,))
+    conn.commit()
+    print("habits marked as done!")
+
+def view_habits(date=None):
+    if not date:
+        date = datetime.today().strftime('%Y-%m-%d')
+    cursor.execute("SELECT*FROM habits WHERE date=?",(date,))
+    rows = cursor.fetchall()
+    if rows:
+        for row in rows:
+            print(row)
+    else:
+        print("no habits found for this date")
+
+def delete_habits(habits_id):
+    cursor.execute("DELETE FROM habits WHERE id=?",(habits_id,))
+    conn.commit()
+    print("habits deleted!")
+
+def habits_summary():
+    cursor.execute("SELECT habits_name, COUNT(*) as total, SUM(CASE WHEN status='Done' THEN 1 ELSE 0 END) as done_count FROM habits GROUP BY habits_name")
+    rows = cursor.fetchall()
+    for row in rows:
+        habits_name, total, done_count = row
+        success_rate = (done_count/total)*100
+        print(f"Habits: {habits_name}, Done: {done_count}/{total}, Success Rate: {success_rate:.2f}%")
+
+while True:
+    print("\n1.add habits\n2.view habits\n3.mark habits as done\n4.delete habits\n5.habits summary\n6.exit")
+    choice = input("enter choice:")
+    
+    if choice =='1':
+        habits_name = input("enter habits name:")
+        add_habits(habits_name)
+    elif choice =='2':
+        date = input("enter date (YYYY-MM-DD)or leave blank for today:")
+        date = date if date else None 
+        view_habits(date)                                                   
+    elif choice =='3':
+        habits_id - int(input("enter habits id to mark as done:"))
+        mark_done(habit_id)
+    elif choice =='4':
+        habit_id - int(input("enter habits ID to delete:"))
+        delete_habits(habits_id)
+    elif choice =='5':
+        habits_summary()
+    elif choice=='6':
+        print("exiting....")
+        break
+    else:
+        print("invalid choice")
+   
+
+   
+
+      
