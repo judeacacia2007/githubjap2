@@ -14,18 +14,10 @@ def add_student(name,age,grade):
     cursor.execute("INSERT INTO student (name,age,grade)VALUES(?,?,?)",(name,age,grade))
     conn.commit()
     print("student added successfully!")
-def view_students():
-    cursor.execute("SELECT*FROM students")
-    for row in cursor.fetchall():
-        print(row)
 def update_student(student_id,name,age,grade):
     cursor.execute("UPDATE student SET name=?,age=?,grade=? WHERE id=?",(name,age,grade,student_id))
     conn.commit()
     print("student added successfully!")
-def update_student(student_id,name,age,grade):
-    cursor.execute("UPDATE student SET name=?,age=?,grade=? WHERE id=?",(name,age,grade,student_id))
-    conn.commit()
-    print("student update successfully!")
 def delete_student(stuent_id):
     cursor.execute("DELETE FROM students WHERE id=?",(student_id,))
     conn.commit()
@@ -33,19 +25,14 @@ def delete_student(stuent_id):
 while True:
     print("\n--student database manager--")
     print("1. add student")
-    print("2. view student")
-    print("3. update student")
-    print("4. delete student")
-    print("5. exit")
-
+    print("2. update student")
+    print("3. delete student")
+    print("4. exit")
     choice = input("enter choice:")
-
     if choice == "1":
         name = input("enter name:")
         age = int(input("enter age:"))
         grade = int(input("enter grade:"))
-    elif choice == "2":
-        view_students()
     elif choice == "3":
         student_id = int(input("enter student ID to update:"))
         name = input("enter new name:")
